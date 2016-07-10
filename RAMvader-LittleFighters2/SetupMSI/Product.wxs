@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - Copyright (C) 2016 Vinicius Rogério Araujo Silva
+ -
+ - This file is part of RAMvader-LittleFighters2.
+ - 
+ - RAMvader-LittleFighters2 is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ - 
+ - RAMvader-LittleFighters2 is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ - 
+ - You should have received a copy of the GNU General Public License
+ - along with RAMvader-LittleFighters2. If not, see <http://www.gnu.org/licenses/>.
+ -->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<!-- This file will be generating the MSI file which installs RAMvader-LittleFighters2 into the user's machine. -->
+	<Product Id="317F72D6-BE84-4326-B08C-D2A921283E10" UpgradeCode="AE20C196-7B90-4889-A420-8D25934C6080"
+			 Name="RAMvader-LittleFighters2 Trainer" Manufacturer="Vinicius Rogério Araujo Silva" Language="1033" Codepage="1252"
+			 Version="1.0.0">
+		<!-- Package, upgrade and downgrade information. -->
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine"
+				 Keywords="Installer"
+				 Manufacturer="Vinicius Rogério Araujo Silva" Languages="1033" SummaryCodepage="1252"
+				 Description="RAMvader-LittleFighters2 is a trainer by Vinicius.RAS for the game Little Fighters 2." />
+
+		<MajorUpgrade AllowDowngrades="no" DowngradeErrorMessage="A newer version of RAMvader-LittleFighters2 is already installed." />
+
+		<!-- Configure media where the files will be stored. -->
+		<Media Id="1" Cabinet="SetupFiles.cab" EmbedCab="yes" />
+
+		<!-- Add the icon(s) we'll be using... -->
+		<Icon Id="ProjectIcon" SourceFile="$(var.TrainerApp.ProjectDir)media\icon.ico" />
+
+		<!-- Configure app's icon to appear in Windows' "Add/Remove Programs" -->
+		<Property Id="ARPPRODUCTICON" Value="ProjectIcon" />
+
+		<!-- Configure the files and directories that will be installed. -->
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<!-- Files to be installed at Program Files (x86). -->
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="APPLICATIONROOTDIRECTORY" Name="RAMvader-LittleFighters2">
+					<Component Id="RAMvaderTrainer.exe" Guid="3D446A1D-8972-4E91-8642-A9946FF9F868">
+						<File Id="RAMvaderTrainer.exe" Source="$(var.TrainerApp.TargetPath)" Checksum="yes" />
+					</Component>
+
+					<Component Id="RAMvader.dll" Guid="93E718AF-69C8-4E53-83CA-E0FEF9C7610C">
+						<File Source="$(var.TrainerApp.TargetDir)RAMvader.dll" Checksum="yes" />
+					</Component>
+				</Directory>
+			</Directory>
+
+			<!-- Directory table entries to create shortcuts on the Program Menu folder (Windows' "Start menu") -->
+			<Directory Id="ProgramMenuFolder">
+				<Component Id="ProgramMenuAppShortcut" Guid="FA38FA62-8073-499A-8262-04301089C80C">
+					<!-- Shortcut to run the trainer from the Program Menu. -->
+					<Shortcut Id="TrainerProgramMenuShortcut" Target="[#RAMvaderTrainer.exe]"
+							  Name="RAMvader-LittleFighters2 Trainer" Description="Runs RAMvader-LittleFighters2: a trainer for the game Little Fighters 2." />
+
+					<!-- Allows removal of shortcuts when the trainer gets uninstalled. -->
+					<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+				</Component>
+			</Directory>
+		</Directory>
+
+		<!-- Finally, make the feature available for installation. -->
+		<Feature Id="TrainerMainFiles" Level="1"
+				 Absent="disallow" AllowAdvertise="no"
+				 ConfigurableDirectory="APPLICATIONROOTDIRECTORY"
+				 Title="RAMvader-LittleFighters2's main files" Description="Main files which allow the RAMvader-LittleFighters2 trainer to be executed."
+				 Display="expand">
+			<ComponentRef Id="RAMvaderTrainer.exe" />
+			<ComponentRef Id="ProgramMenuAppShortcut" />
+			<ComponentRef Id="RAMvader.dll" />
+		</Feature>
+
+		<!-- Configure the installer's User Interface. -->
+		<UIRef Id="WixUI_InstallDir" />
+		<UIRef Id="WixUI_ErrorProgressText" />
+		<Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
+
+		<WixVariable Id="WixUILicenseRtf" Value="$(var.TrainerApp.ProjectDir)docs\License.rtf" />
+
+	</Product>
+</Wix>
