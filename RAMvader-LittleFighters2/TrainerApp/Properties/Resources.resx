@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="strBtCheckAll" xml:space="preserve">
+    <value>Check all</value>
+  </data>
+  <data name="strBtUncheckAll" xml:space="preserve">
+    <value>UncheckAll</value>
+  </data>
   <data name="strChkCheatDescriptionExample" xml:space="preserve">
     <value>example cheat's description!</value>
   </data>
@@ -132,11 +138,23 @@
   <data name="strGroupBoxHeaderSupport" xml:space="preserve">
     <value>Support us!</value>
   </data>
+  <data name="strLblCheatPromptInfiniteHP" xml:space="preserve">
+    <value>Infinite HP:</value>
+  </data>
+  <data name="strLblCheatPromptInfiniteMP" xml:space="preserve">
+    <value>Infinite MP:</value>
+  </data>
+  <data name="strLblCheatPromptOneHitKills" xml:space="preserve">
+    <value>One Hit Kills:</value>
+  </data>
   <data name="strLblClickToDonate" xml:space="preserve">
     <value>(Click to donate via PayPal).</value>
   </data>
   <data name="strLblGamesProcessPrompt" xml:space="preserve">
     <value>Game's process:</value>
+  </data>
+  <data name="strLblIndependentTeam" xml:space="preserve">
+    <value>Independent</value>
   </data>
   <data name="strLblNotAttached" xml:space="preserve">
     <value>Game not detected... Please, run the game!</value>
@@ -152,6 +170,21 @@
   </data>
   <data name="strLblRequiredGameVersionValue" xml:space="preserve">
     <value>2.0a</value>
+  </data>
+  <data name="strLblStageModeEnemies" xml:space="preserve">
+    <value>Stage Mode enemies</value>
+  </data>
+  <data name="strLblTeam1" xml:space="preserve">
+    <value>Team 1</value>
+  </data>
+  <data name="strLblTeam2" xml:space="preserve">
+    <value>Team 2</value>
+  </data>
+  <data name="strLblTeam3" xml:space="preserve">
+    <value>Team 3</value>
+  </data>
+  <data name="strLblTeam4" xml:space="preserve">
+    <value>Team 4</value>
   </data>
   <data name="strMainWindowTitle" xml:space="preserve">
     <value>RAMvader-LittleFighters2 by Vinicius.RAS</value>

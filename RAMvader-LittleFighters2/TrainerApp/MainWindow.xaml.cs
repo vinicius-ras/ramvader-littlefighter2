@@ -26,6 +26,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace TrainerApp
 {
@@ -104,8 +105,11 @@ namespace TrainerApp
 		/// <param name="mainModuleAddress">The base address of the game's process' main module.</param>
 		private void RegisterMemoryAlterationSets( IntPtr mainModuleAddress )
 		{
-			// THIS METHOD IS CALLED AFTER THE INJECTION OF CODE/VARIABLES INTO THE GAME PROCESS' MEMORY SPACE.
-			// WRITE THE CODE WHICH REGISTER MEMORY ALTERATION SETS HERE.
+			UpdateBitmasksInGameMemory();
+
+			GameMemoryInjector.AddMemoryAlteration( ECheat.evCheatInfiniteHP, new MemoryAlterationX86Call( GameMemoryIO, mainModuleAddress + 0xE0CE, ECodeCave.evCodeCaveInfiniteHP, 6 ) );
+
+			GameMemoryInjector.SetMemoryAlterationsActive( ECheat.evCheatInfiniteHP, true );
 		}
 
 
@@ -229,6 +233,51 @@ namespace TrainerApp
 			// Restart the timer which looks for the game's process
 			StartLookingForGameProcess();
 		}
+
+
+		/// <summary>Checks all of the user's configurations on the trainer's UI, and updates the values of each necessary
+		/// variable in the memory injected in the game's memory.</summary>
+		private void UpdateBitmasksInGameMemory()
+		{
+			// Try to find all checkboxes which indicate which cheat is enabled for which team
+			Queue<DependencyObject> objectsToProcess = new Queue<DependencyObject>();
+			objectsToProcess.Enqueue( m_hacksGroupBox );
+
+			Dictionary<EVariable,UInt32> newBitmaskValues = new Dictionary<EVariable, uint>();
+			while ( objectsToProcess.Count > 0 )
+			{
+				// Look for checkboxes...
+				DependencyObject curObject = objectsToProcess.Dequeue();
+				if ( curObject is CheckBox )
+				{
+					// ...but only checkboxes whose Tag attributes indicate that they're associated with injection variables
+					CheckBox curCheckBox = (CheckBox) curObject;
+					if ( curCheckBox.Tag is EVariable )
+					{
+						EVariable associatedVariable = (EVariable) curCheckBox.Tag;
+						int associatedTeamNumber = Grid.GetColumn( curCheckBox ) - 1;
+						UInt32 associatedTeamMask = (UInt32)( 1 << associatedTeamNumber );
+
+						if ( newBitmaskValues.ContainsKey( associatedVariable ) == false )
+							newBitmaskValues[associatedVariable] = 0;
+
+						if ( curCheckBox.IsChecked == true )
+							newBitmaskValues[associatedVariable] |= associatedTeamMask;
+						else
+							newBitmaskValues[associatedVariable] &= ~associatedTeamMask;
+
+					}
+				}
+
+				// Also look for checkboxes in children
+				for ( int c = VisualTreeHelper.GetChildrenCount( curObject ) - 1; c >= 0; c-- )
+					objectsToProcess.Enqueue( VisualTreeHelper.GetChild( curObject, c ) );
+			}
+
+			// Write all values
+			foreach ( KeyValuePair<EVariable, UInt32> curKeyPair in newBitmaskValues )
+				GameMemoryInjector.WriteVariableValue( curKeyPair.Key, curKeyPair.Value );
+		}
 		#endregion
 
 
@@ -308,7 +357,56 @@ namespace TrainerApp
 			if ( GameMemoryIO.IsAttached() )
 				GameMemoryInjector.SetMemoryAlterationsActive( cheatID, bEnableCheat );
 		}
-		#endregion
 
+
+		/// <summary>Called when the user clicks any of the "Check/Uncheck All" button (to check or uncheck all
+		/// cheat CheckBox'es of a given row representing a cheat that can be enabled/disabled).</summary>
+		/// <param name="sender">Object which sent the event.</param>
+		/// <param name="e">Arguments from the event.</param>
+		private void BtCheckOrUncheckAllClick( object sender, RoutedEventArgs e )
+		{
+			// Did we click on the "Check all" or the "Uncheck all" button?
+			Button btClicked = (Button) sender;
+			bool bCheckAll;
+			if ( (string) btClicked.Content == Properties.Resources.strBtCheckAll )
+				bCheckAll = true;
+			else if ( (string) btClicked.Content == Properties.Resources.strBtUncheckAll )
+				bCheckAll = false;
+			else
+				throw new NotImplementedException();
+
+			// Search for all checkboxes in the same row as the clicked button
+			int clickedButtonRow = Grid.GetRow( btClicked );
+
+			Queue<DependencyObject> objectsToProcess = new Queue<DependencyObject>();
+			objectsToProcess.Enqueue( m_hacksGroupBox );
+			while ( objectsToProcess.Count > 0 )
+			{
+				// Verify if the current object being processed is a CheckBox...
+				DependencyObject curObject = objectsToProcess.Dequeue();
+				if ( curObject is CheckBox )
+				{
+					// Verify if the CheckBox is in the same row as the clicked Button, and check/uncheck it if so
+					CheckBox curCheckbox = (CheckBox) curObject;
+					if ( Grid.GetRow( curCheckbox ) == clickedButtonRow )
+						curCheckbox.IsChecked = bCheckAll;
+				}
+
+				// Also search for checkboxes in the child elements
+				for ( int c = VisualTreeHelper.GetChildrenCount( curObject ) - 1; c >= 0; c-- )
+					objectsToProcess.Enqueue( VisualTreeHelper.GetChild( curObject, c ) );
+			}
+		}
+		
+
+		/// <summary>Called whenever the user checks or unchecks any of the CheckBoxes that control for which team is a specific cheat enabled/disabled.</summary>
+		/// <param name="sender">Object which sent the event.</param>
+		/// <param name="e">Arguments from the event.</param>
+		private void CheatCheckBoxToggle( object sender, RoutedEventArgs e )
+		{
+			if ( GameMemoryIO.IsAttached() )
+				UpdateBitmasksInGameMemory();
+		}
+		#endregion
 	}
 }
