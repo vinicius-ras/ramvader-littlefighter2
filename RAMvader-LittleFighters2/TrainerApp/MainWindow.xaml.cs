@@ -108,8 +108,10 @@ namespace TrainerApp
 			UpdateBitmasksInGameMemory();
 
 			GameMemoryInjector.AddMemoryAlteration( ECheat.evCheatInfiniteHP, new MemoryAlterationX86Call( GameMemoryIO, mainModuleAddress + 0xE0CE, ECodeCave.evCodeCaveInfiniteHP, 6 ) );
+			GameMemoryInjector.AddMemoryAlteration( ECheat.evCheatInfiniteMP, new MemoryAlterationX86Call( GameMemoryIO, mainModuleAddress + 0x1FA90, ECodeCave.evCodeCaveInfiniteMP, 10 ) );
 
 			GameMemoryInjector.SetMemoryAlterationsActive( ECheat.evCheatInfiniteHP, true );
+			GameMemoryInjector.SetMemoryAlterationsActive( ECheat.evCheatInfiniteMP, true );
 		}
 
 
@@ -342,20 +344,8 @@ namespace TrainerApp
 		/// <param name="e">Arguments from the event.</param>
 		private void CheckBoxCheatToggled( object sender, RoutedEventArgs e )
 		{
-			// Retrieve information which will be used to enable or disable the cheat
-			CheckBox chkBox = (CheckBox) e.Source;
-			ECheat cheatID = (ECheat) chkBox.Tag;
-			bool bEnableCheat = ( chkBox.IsChecked == true );
-
-			// Update the list of cheats to be enabled
-			if ( bEnableCheat )
-				m_enabledCheats.Add( cheatID );
-			else
-				m_enabledCheats.Remove( cheatID );
-
-			// Enable or disable the cheat in the game's memory space
 			if ( GameMemoryIO.IsAttached() )
-				GameMemoryInjector.SetMemoryAlterationsActive( cheatID, bEnableCheat );
+				UpdateBitmasksInGameMemory();
 		}
 
 
@@ -396,16 +386,6 @@ namespace TrainerApp
 				for ( int c = VisualTreeHelper.GetChildrenCount( curObject ) - 1; c >= 0; c-- )
 					objectsToProcess.Enqueue( VisualTreeHelper.GetChild( curObject, c ) );
 			}
-		}
-		
-
-		/// <summary>Called whenever the user checks or unchecks any of the CheckBoxes that control for which team is a specific cheat enabled/disabled.</summary>
-		/// <param name="sender">Object which sent the event.</param>
-		/// <param name="e">Arguments from the event.</param>
-		private void CheatCheckBoxToggle( object sender, RoutedEventArgs e )
-		{
-			if ( GameMemoryIO.IsAttached() )
-				UpdateBitmasksInGameMemory();
 		}
 		#endregion
 	}
