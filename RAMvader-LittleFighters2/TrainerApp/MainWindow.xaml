@@ -151,6 +151,14 @@
 					<Button Grid.Row="2" Grid.Column="8" Content="{x:Static props:Resources.strBtUncheckAll}" Click="BtCheckOrUncheckAllClick" />
 
 					<Label Grid.Row="3" Grid.Column="0" Content="{x:Static props:Resources.strLblCheatPromptOneHitKills}" Style="{StaticResource styleRowHeaderLabel}" />
+					<CheckBox Grid.Row="3" Grid.Column="1" Checked="CheckBoxCheatToggled" Unchecked="CheckBoxCheatToggled" Tag="{x:Static local:EVariable.evVarOneHitKillsTeamsBitmask}" />
+					<CheckBox Grid.Row="3" Grid.Column="2" Checked="CheckBoxCheatToggled" Unchecked="CheckBoxCheatToggled" Tag="{x:Static local:EVariable.evVarOneHitKillsTeamsBitmask}" />
+					<CheckBox Grid.Row="3" Grid.Column="3" Checked="CheckBoxCheatToggled" Unchecked="CheckBoxCheatToggled" Tag="{x:Static local:EVariable.evVarOneHitKillsTeamsBitmask}" />
+					<CheckBox Grid.Row="3" Grid.Column="4" Checked="CheckBoxCheatToggled" Unchecked="CheckBoxCheatToggled" Tag="{x:Static local:EVariable.evVarOneHitKillsTeamsBitmask}" />
+					<CheckBox Grid.Row="3" Grid.Column="5" Checked="CheckBoxCheatToggled" Unchecked="CheckBoxCheatToggled" Tag="{x:Static local:EVariable.evVarOneHitKillsTeamsBitmask}" />
+					<CheckBox Grid.Row="3" Grid.Column="6" Checked="CheckBoxCheatToggled" Unchecked="CheckBoxCheatToggled" Tag="{x:Static local:EVariable.evVarOneHitKillsTeamsBitmask}" />
+					<Button Grid.Row="3" Grid.Column="7" Content="{x:Static props:Resources.strBtCheckAll}" Margin="2.5,0,5,0" Click="BtCheckOrUncheckAllClick" />
+					<Button Grid.Row="3" Grid.Column="8" Content="{x:Static props:Resources.strBtUncheckAll}" Click="BtCheckOrUncheckAllClick" />
 				</Grid>
 			</StackPanel>
 		</GroupBox>
