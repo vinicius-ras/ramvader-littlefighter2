@@ -5,3 +5,10 @@ RAMvader-LittleFighter2 uses the RAMvader library to have access to most low-lev
 
 Please click the image below to see the project's video for a demonstration of the 'hacks' provided by the trainer:<br />
 [![RAMvader-LittleFighter2 demonstration](https://vinicius-ras.github.io/ramvader-littlefighter2/VideoScreenshot.jpg)](https://youtu.be/T2L7BXZJgf4 "RAMvader-LittleFighter2 demonstration")
+
+This trainer has been tested on **Little Fighters 2 v2.0a**.
+
+## Available cheats ##
+* **Infinite HP:** infinite HP for the characters in selected teams.
+* **Infinite MP:** infinite MP for the characters in selected teams.
+* **One-hit kills:** enables one-hit kills for the characters in selected teams.
